@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <!-- 移动端适配 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>站点引导页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            /* 蓝紫渐变背景 */
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            font-family: "Microsoft YaHei", system-ui, sans-serif;
+            /* 垂直水平居中 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+        }
+
+        .container {
+            text-align: center;
+            padding: 0 20px;
+            max-width: 600px;
+        }
+
+        .title {
+            font-size: 42px;
+            margin-bottom: 16px;
+            letter-spacing: 2px;
+        }
+
+        .desc {
+            font-size: 17px;
+            opacity: 0.9;
+            line-height: 1.8;
+            margin-bottom: 40px;
+        }
+
+        /* 按钮样式 */
+        .btn-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 36px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-main {
+            background: #fff;
+            color: #2563eb;
+        }
+
+        .btn-main:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .btn-outline {
+            border: 2px solid #fff;
+            color: #fff;
+            background: transparent;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateY(-4px);
+        }
+
+        .footer-tip {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 13px;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">欢迎来到本站</h1>
+        <p class="desc">
+            此页面为站点引导页，点击下方按钮前往对应页面<br>
+            基于 GitHub Pages 免费静态托管
+        </p>
+        <div class="btn-group">
+            <!-- 修改href替换你的跳转链接 -->
+            <a href="/home" class="btn btn-main">进入主页</a>
+            <a href="https://github.com/你的用户名" class="btn btn-outline">Github仓库</a>
+        </div>
+    </div>
+
+    <div class="footer-tip">
+        © 2026 静态站点 | GitHub Pages 托管
+    </div>
+</body>
+</html>

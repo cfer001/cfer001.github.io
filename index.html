@@ -2,111 +2,624 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <!-- 移动端适配 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>站点引导页</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>地址发布页 | 收藏回家不迷路</title>
+    <meta name="description" content="地址发布页 · 智能线路检测 · 一键收藏">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --ios-bg: #09090b;
+            --ios-glass: rgba(29, 29, 31, 0.65);
+            --ios-border: rgba(255, 255, 255, 0.12);
+            --ios-text: #f5f5f7;
+            --ios-secondary: #8b8b8f;
+            --ios-blue: #007bff;
+            --ios-green: #34c759;
+            --ios-yellow: #ffcc00;
+            --ios-red: #ff3b30;
+            --ios-card: rgba(40, 40, 43, 0.65);
+            --ios-hover: rgba(60, 60, 65, 0.7);
+        }
+
+        body.ios-light {
+            --ios-bg: #f2f2f7;
+            --ios-glass: rgba(255, 255, 255, 0.7);
+            --ios-border: rgba(0, 0, 0, 0.08);
+            --ios-text: #1d1d1f;
+            --ios-secondary: #6e6e73;
+            --ios-blue: #007bff;
+            --ios-green: #34c759;
+            --ios-yellow: #ffcc00;
+            --ios-red: #ff3b30;
+            --ios-card: rgba(255, 255, 255, 0.85);
+            --ios-hover: rgba(235, 235, 240, 0.95);
         }
 
         body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', 'PingFang SC', sans-serif;
+            background: var(--ios-bg);
             min-height: 100vh;
-            /* 蓝紫渐变背景 */
-            background: linear-gradient(135deg, #2563eb, #7c3aed);
-            font-family: "Microsoft YaHei", system-ui, sans-serif;
-            /* 垂直水平居中 */
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ffffff;
+            padding: 20px;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--ios-text);
+            position: relative;
+            overflow-x: hidden;
         }
 
-        .container {
-            text-align: center;
-            padding: 0 20px;
-            max-width: 600px;
+        .ios-bg-blur {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(
+                circle at 50% 10%,
+                rgba(0, 122, 255, 0.06),
+                transparent 60%
+            ), radial-gradient(
+                circle at 80% 90%,
+                rgba(52, 199, 89, 0.04),
+                transparent 50%
+            );
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.8;
         }
 
-        .title {
-            font-size: 42px;
-            margin-bottom: 16px;
-            letter-spacing: 2px;
+        .ios-wrapper {
+            width: 100%;
+            max-width: 700px;
+            position: relative;
+            z-index: 10;
         }
 
-        .desc {
-            font-size: 17px;
-            opacity: 0.9;
-            line-height: 1.8;
-            margin-bottom: 40px;
-        }
-
-        /* 按钮样式 */
-        .btn-group {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 14px 36px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-size: 16px;
-            font-weight: 500;
+        .ios-glass-card {
+            background: var(--ios-glass);
+            backdrop-filter: blur(35px) saturate(1.8);
+            -webkit-backdrop-filter: blur(35px) saturate(1.8);
+            border-radius: 28px;
+            border: 1px solid var(--ios-border);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+            padding: 32px;
             transition: all 0.3s ease;
         }
 
-        .btn-main {
-            background: #fff;
-            color: #2563eb;
-        }
-
-        .btn-main:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-        }
-
-        .btn-outline {
-            border: 2px solid #fff;
-            color: #fff;
-            background: transparent;
-        }
-
-        .btn-outline:hover {
-            background: rgba(255,255,255,0.15);
-            transform: translateY(-4px);
-        }
-
-        .footer-tip {
+        .ios-theme-btn {
             position: absolute;
+            top: 24px;
+            right: 28px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--ios-card);
+            border: 1px solid var(--ios-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            color: var(--ios-text);
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 20;
+        }
+        .ios-theme-btn:active { transform: scale(0.94); }
+
+        .ios-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .ios-title {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+        .ios-subtitle {
+            font-size: 14px;
+            color: var(--ios-secondary);
+            font-weight: 500;
+        }
+
+        /* 静态公告样式 */
+     .notice-board {
+    background: rgba(255, 204, 0, 0.08);
+    border: 1px solid rgba(255, 204, 0, 0.2);
+    border-radius: 20px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    line-height: 1.6;
+    font-size: 15px;
+    /* 删除 white-space: pre-line 或者保留但去掉文本多余换行 */
+}
+        .notice-title {
+            font-weight: 600;
+            color: var(--ios-yellow);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 16px;
+        }
+
+        .ios-bookmark-btn {
+            width: 100%;
+            background: var(--ios-blue);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 16px;
+            font-size: 17px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 20px rgba(0, 123, 255, 0.25);
+        }
+        .ios-bookmark-btn:active { transform: scale(0.97); }
+
+        .ios-link-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .ios-link-item {
+            background: var(--ios-card);
+            border-radius: 20px;
+            border: 1px solid var(--ios-border);
+            padding: 18px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .ios-link-item:hover {
+            background: var(--ios-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        .ios-link-item:active { transform: scale(0.985); }
+
+        .ios-link-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+        }
+        .ios-icon-box {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            background: rgba(0, 123, 255, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--ios-blue);
+        }
+        .ios-link-text h4 {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        .ios-link-desc {
+            font-size: 12px;
+            color: var(--ios-secondary);
+        }
+
+        .ios-latency-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-right: 10px;
+        }
+        .ios-signal {
+            display: flex;
+            gap: 3px;
+            align-items: flex-end;
+            height: 18px;
+        }
+        .ios-signal-bar {
+            width: 4px;
+            height: 6px;
+            background: rgba(120, 120, 120, 0.25);
+            border-radius: 2px;
+            transition: all 0.2s;
+        }
+        .ios-signal-bar.active { background: var(--ios-green); }
+        .ios-signal.mid .active { background: var(--ios-yellow); }
+        .ios-signal.high .active { background: var(--ios-red); }
+        .ios-signal-bar:nth-child(1) { height: 6px; }
+        .ios-signal-bar:nth-child(2) { height: 10px; }
+        .ios-signal-bar:nth-child(3) { height: 14px; }
+        .ios-signal-bar:nth-child(4) { height: 18px; }
+
+        .ios-ms {
+            font-size: 14px;
+            font-weight: 600;
+            min-width: 55px;
+            text-align: right;
+        }
+        .ios-ms.green { color: var(--ios-green); }
+        .ios-ms.yellow { color: var(--ios-yellow); }
+        .ios-ms.red { color: var(--ios-red); }
+        .ios-ms.loading {
+            color: var(--ios-blue);
+            animation: ios-pulse 1s infinite alternate;
+        }
+
+        @keyframes ios-pulse {
+            0% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+
+        .ios-copy-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ios-secondary);
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .ios-copy-btn:active {
+            background: rgba(0, 123, 255, 0.12);
+            color: var(--ios-blue);
+            transform: scale(0.92);
+        }
+
+        .ios-info-bar {
+            background: var(--ios-card);
+            border-radius: 18px;
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: var(--ios-secondary);
+            margin-bottom: 16px;
+        }
+        .ios-refresh-btn {
+            background: transparent;
+            border: none;
+            color: var(--ios-blue);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+        .ios-refresh-btn:active { background: rgba(0, 123, 255, 0.1); }
+
+        .ios-tip {
+            text-align: center;
+            font-size: 12px;
+            color: var(--ios-secondary);
+            padding: 12px;
+            background: var(--ios-card);
+            border-radius: 16px;
+        }
+
+        .ios-footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 11px;
+            color: var(--ios-secondary);
+            opacity: 0.7;
+        }
+
+        .ios-toast {
+            position: fixed;
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 13px;
-            opacity: 0.7;
+            background: var(--ios-card);
+            backdrop-filter: blur(30px);
+            color: var(--ios-text);
+            padding: 12px 22px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 999;
+            border: 1px solid var(--ios-border);
+            animation: ios-toast 1.6s forwards;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        @keyframes ios-toast {
+            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            20% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        @media (max-width: 600px) {
+            .ios-glass-card { padding: 24px 20px; }
+            .ios-title { font-size: 24px; }
+            .ios-link-item { padding: 16px; }
+            .ios-icon-box { width: 42px; height: 42px; }
+            .ios-link-left { gap: 12px; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="title">欢迎来到本站</h1>
-        <p class="desc">
-            此页面为站点引导页，点击下方按钮前往对应页面<br>
-            基于 GitHub Pages 免费静态托管
-        </p>
-        <div class="btn-group">
-            <!-- 修改href替换你的跳转链接 -->
-            <a href="/home" class="btn btn-main">进入主页</a>
-            <a href="https://github.com/你的用户名" class="btn btn-outline">Github仓库</a>
+    <div class="ios-bg-blur"></div>
+    <div class="ios-wrapper">
+        <button class="ios-theme-btn" id="themeBtn">
+            <i class="fas fa-moon"></i>
+        </button>
+
+        <div class="ios-glass-card">
+            <div class="ios-header">
+                <h1 class="ios-title">地址发布页</h1>
+                <div class="ios-subtitle">收藏我 · 回家不迷路</div>
+            </div>
+
+            <!-- 静态公告区域，直接修改这里文字即可更新公告 -->
+<div class="notice-board">
+    <div class="notice-title"><i class="fas fa-bullhorn"></i> 系统公告</div>
+    <div id="noticeContent">      
+	<span style="display: block; text-align: center;">
+        【目前二站租号每晚都会补货 需要的可去二站购买】
+    </span><br>
+</div>
+</div>
+
+            <button class="ios-bookmark-btn" id="bookmarkBtn">
+                <i class="fas fa-bookmark"></i> 添加到收藏夹
+            </button>
+
+            <div class="ios-link-list" id="linkList">
+                <div class="ios-link-item" data-url="https://www.363faka.com/links/2D1B39CB" data-copy="https://www.363faka.com/links/2D1B39CB">
+				
+                    <div class="ios-link-left">
+                        <div class="ios-icon-box"><i class="fas fa-crown"></i></div>
+                        <div class="ios-link-text">
+                            <h4>主站入口</h4>
+                            <div class="ios-link-desc">点击最右边复制按钮可复制网址</div>
+                        </div>
+                    </div>
+                    <div class="ios-latency-area">
+                        <div class="ios-signal">
+                            <div class="ios-signal-bar"></div>
+                            <div class="ios-signal-bar"></div>
+                            <div class="ios-signal-bar"></div>
+                            <div class="ios-signal-bar"></div>
+                        </div>
+                        <div class="ios-ms loading">检测中</div>
+                    </div>
+                    <div class="ios-copy-btn" data-copy="https://www.363faka.com/links/2D1B39CB">
+                        <i class="far fa-copy"></i>
+                    </div>
+                </div>
+    <div class="ios-link-item" data-url="https://www.517fk.cn/links/FB04E55C" data-copy="https://www.517fk.cn/links/FB04E55C">
+				
+                    <div class="ios-link-left">
+                        <div class="ios-icon-box"><i class="fas fa-crown"></i></div>
+                        <div class="ios-link-text">
+                            <h4>二站入口</h4>
+                            <div class="ios-link-desc">点击最右边复制按钮可复制网址</div>
+                        </div>
+                    </div>
+                    <div class="ios-latency-area">
+                        <div class="ios-signal">
+                            <div class="ios-signal-bar"></div>
+                            <div class="ios-signal-bar"></div>
+                            <div class="ios-signal-bar"></div>
+                            <div class="ios-signal-bar"></div>
+                        </div>
+                        <div class="ios-ms loading">检测中</div>
+                    </div>
+                    <div class="ios-copy-btn" data-copy="https://www.517fk.cn/links/FB04E55C">
+                        <i class="far fa-copy"></i>
+                    </div>
+                </div>
+
+                <div class="ios-link-item" data-url="https://www.showdoc.com.cn/p/6c3b166320dcebc28f63c50a5b4883e0" data-copy="https://www.showdoc.com.cn/p/6c3b166320dcebc28f63c50a5b4883e0">
+                    <div class="ios-link-left">
+                        <div class="ios-icon-box"><i class="fas fa-calendar-alt"></i></div>
+                        <div class="ios-link-text">
+                            <h4>每日推荐</h4>
+                            <div class="ios-link-desc">点击最右边复制按钮可复制网址</div>
+                        </div>
+                    </div>
+                    <div class="ios-latency-area">
+                        <div class="ios-signal">
+                            <div class="ios-signal-bar"></div>
+                            <div class="ios-signal-bar"></div>
+                            <div class="ios-signal-bar"></div>
+                            <div class="ios-signal-bar"></div>
+                        </div>
+                        <div class="ios-ms loading">检测中</div>
+                    </div>
+                    <div class="ios-copy-btn" data-copy="https://www.showdoc.com.cn/p/6c3b166320dcebc28f63c50a5b4883e0">
+                        <i class="far fa-copy"></i>
+                    </div>
+                </div>
+
+                <div class="ios-link-item" data-url="https://www.showdoc.com.cn/p/fc28cec646957a494c7887bfff458ab5" data-copy="https://www.showdoc.com.cn/p/fc28cec646957a494c7887bfff458ab5">
+                    <div class="ios-link-left">
+                        <div class="ios-icon-box"><i class="fas fa-life-ring"></i></div>
+                        <div class="ios-link-text">
+                            <h4>疑难解答</h4>
+                            <div class="ios-link-desc">技术支持 & 帮助</div>
+                        </div>
+                    </div>
+                    <div class="ios-latency-area">
+                        <div class="ios-signal">
+                            <div class="ios-signal-bar"></div>
+                            <div class="ios-signal-bar"></div>
+                            <div class="ios-signal-bar"></div>
+                            <div class="ios-signal-bar"></div>
+                        </div>
+                        <div class="ios-ms loading">检测中</div>
+                    </div>
+                    <div class="ios-copy-btn" data-copy="https://www.showdoc.com.cn/p/fc28cec646957a494c7887bfff458ab5">
+                        <i class="far fa-copy"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ios-info-bar">
+                <span><i class="far fa-clock"></i> 最后检测：<span id="lastTime">--:--:--</span></span>
+                <span>平均延迟：<span id="avgMs">--</span> ms</span>
+                <button class="ios-refresh-btn" id="refreshBtn"><i class="fas fa-sync-alt"></i> 刷新</button>
+            </div>
+
+            <div class="ios-tip">
+                <i class="fas fa-info-circle"></i> 点击卡片直接访问 · 点击复制按钮快速复制链接
+            </div>
+
+            <div class="ios-footer">
+                地址发布页 · 永久入口 建议收藏
+            </div>
         </div>
     </div>
 
-    <div class="footer-tip">
-        © 2026 静态站点 | GitHub Pages 托管
-    </div>
+    <script>
+        (() => {
+            const items = document.querySelectorAll('.ios-link-item');
+            const lastTime = document.getElementById('lastTime');
+            const avgMs = document.getElementById('avgMs');
+            const refreshBtn = document.getElementById('refreshBtn');
+            const themeBtn = document.getElementById('themeBtn');
+            const bookmarkBtn = document.getElementById('bookmarkBtn');
+            const body = document.body;
+            let checking = false;
+            let timeMap = new Map();
+
+            // 主题切换
+            function initTheme() {
+                const dark = localStorage.getItem('theme') !== 'light';
+                setTheme(dark);
+            }
+            function setTheme(dark) {
+                const icon = themeBtn.querySelector('i');
+                if (dark) {
+                    body.classList.remove('ios-light');
+                    icon.className = 'fas fa-moon';
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    body.classList.add('ios-light');
+                    icon.className = 'fas fa-sun';
+                    localStorage.setItem('theme', 'light');
+                }
+            }
+            themeBtn.addEventListener('click', () => {
+                const isDark = !body.classList.contains('ios-light');
+                setTheme(!isDark);
+            });
+
+            // 复制弹窗
+            async function copy(text) {
+                try {
+                    await navigator.clipboard.writeText(text);
+                    showToast('<i class="fas fa-check"></i> 链接已复制');
+                } catch (e) {
+                    showToast('<i class="fas fa-exclamation"></i> 复制失败');
+                }
+            }
+            function showToast(msg) {
+                document.querySelectorAll('.ios-toast').forEach(t => t.remove());
+                const t = document.createElement('div');
+                t.className = 'ios-toast';
+                t.innerHTML = msg;
+                document.body.appendChild(t);
+                setTimeout(() => t.remove(), 1600);
+            }
+
+            // 链接卡片交互
+            items.forEach(item => {
+                const url = item.dataset.url;
+                item.addEventListener('click', e => {
+                    if (e.target.closest('.ios-copy-btn')) return;
+                    window.open(url, '_blank');
+                });
+                const copyBtn = item.querySelector('.ios-copy-btn');
+                copyBtn.addEventListener('click', () => copy(item.dataset.copy));
+            });
+
+            bookmarkBtn.addEventListener('click', () => {
+                showToast(navigator.userAgent.includes('Mac') ? '请按 ⌘+D 收藏' : '请按 Ctrl+D 收藏');
+            });
+
+            // 测速UI更新
+            function setLoading(item) {
+                const ms = item.querySelector('.ios-ms');
+                ms.className = 'ios-ms loading';
+                ms.textContent = '···';
+                item.querySelectorAll('.ios-signal-bar').forEach(b => b.classList.remove('active'));
+            }
+            function updateLatency(item, ms) {
+                const msEl = item.querySelector('.ios-ms');
+                const signal = item.querySelector('.ios-signal');
+                const bars = item.querySelectorAll('.ios-signal-bar');
+                signal.className = 'ios-signal';
+                msEl.className = 'ios-ms';
+                let level = 'red', active = 1, text = `${ms}ms`;
+                if (ms >= 5000) { text = '超时'; active = 0; }
+                else if (ms < 600) { level = 'green'; active = 4; }
+                else if (ms < 1500) { level = 'yellow'; active = 2; }
+                msEl.textContent = text;
+                msEl.classList.add(level);
+                signal.classList.add(level);
+                bars.forEach((b, i) => i < active ? b.classList.add('active') : b.classList.remove('active'));
+            }
+
+            // 测速逻辑
+            function speedTest(url) {
+                return new Promise(resolve => {
+                    const start = performance.now();
+                    const img = new Image();
+                    const rand = Date.now() + Math.random();
+                    const src = url.replace(/\/$/, '') + `/favicon.ico?t=${rand}`;
+                    let done = false;
+                    const timer = setTimeout(() => { if (!done) { done = true; resolve(5000); } }, 5000);
+                    img.onload = img.onerror = () => {
+                        if (!done) { done = true; clearTimeout(timer); resolve(Math.round(performance.now() - start)); }
+                    };
+                    img.src = src;
+                });
+            }
+            async function checkAll() {
+                if (checking) return;
+                checking = true;
+                items.forEach(setLoading);
+                const arr = [];
+                for (const item of items) {
+                    const ms = await speedTest(item.dataset.url);
+                    updateLatency(item, ms);
+                    arr.push(ms);
+                }
+                avgMs.textContent = arr.length ? Math.round(arr.reduce((a,b)=>a+b,0)/arr.length) : 0;
+                lastTime.textContent = new Date().toLocaleTimeString('zh-CN', {hour12:false});
+                checking = false;
+            }
+            refreshBtn.addEventListener('click', () => checkAll());
+
+            // 初始化执行测速
+            initTheme();
+            checkAll();
+            setInterval(() => checkAll(), 35000);
+        })();
+    </script>
 </body>
 </html>
